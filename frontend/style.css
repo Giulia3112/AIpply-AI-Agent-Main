@@ -1,0 +1,243 @@
+body {
+    margin: 0;
+    height: 100vh;
+    background-image: url(img/fundo.jpeg);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+
+header {
+    position: relative;
+    height: 80px;
+    background: rgba(255, 255, 255, 0.05);
+    display: flex;
+    align-items: center;
+    padding-left: 120px;
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2); /* listra branca bem suave */
+}
+
+.logo { 
+    position: absolute;
+    top: 16px;
+    left: 20px;
+    height: 40px; /* Tamanho da logo */
+}
+
+.input-container {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    background: rgba(255,255,255,0.05);
+    border-radius: 999px;
+    padding: 5px;
+    width: 90%;
+    min-width: 90px;
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.2); /* listra branca bem suave */
+}
+
+.input-container input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: white;
+    font-size: 16px;
+    padding: 15px 20px;
+    text-align: left;
+}
+
+.input-container button {
+    background: #2d5fff;
+    border: none;
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.input-container button ion-icon {
+    color: white;
+    font-size: 20px;
+}
+
+/*
+.chat-Container {
+    max-width: 800px;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(5px);
+    color: white;
+    padding: 15px 20px;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    font-size: 16px;
+    line-height: 1.4;
+
+}
+*/
+
+.chat-wrapper {
+    display: flex;
+    align-items: flex-start;
+    margin-left: 20px;
+    gap: 10px;
+}
+
+#chat-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 15px;
+    border-radius: 10px;
+    color: white;
+    max-width: 100%;
+}
+
+.message-row {
+    display: flex;
+    flex-direction: column;
+    max-width: 50%;
+}
+
+.message-row-user {
+    align-self: flex-end;
+    text-align: right;
+}
+
+.message-row-bot {
+    align-self: flex-start;
+    text-align: left;
+}
+
+.chat-message {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 10px 14px;
+    border-radius: 10px;
+    color: white;
+    word-wrap: break-word;
+}
+
+/* Mensagem do usuário (direita) */
+.message-row-user .chat-message {
+  background: #2d5fff;   /* cor de fundo diferente */
+  align-self: flex-end;  /* joga pro lado direito */
+  border-bottom-right-radius: 0; /* detalhe no canto */
+  max-width: 50%;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
+}
+
+/* Mensagem do bot (esquerda) */
+.message-row-bot .chat-message {
+  background: rgba(255, 255, 255, 0.1);
+  align-self: flex-start; /* lado esquerdo */
+  border-bottom-left-radius: 0;
+  max-width: 70%;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
+  text-align: left;
+}
+
+/*
+.chat-block {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+*/
+
+.time {
+    color: gray;
+    margin-top: 4px;
+    font-size: 12px;
+}
+
+.chat-section {
+    border: 1px solid #ccc;
+    padding: 10px;
+    width: 45%;
+    background: #fff;
+    border-radius: 8px;
+}
+
+/* Opportunity Cards */
+.opportunity-card {
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 12px;
+    padding: 15px;
+    margin: 8px 0;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+    max-width: 100%;
+}
+
+.opportunity-card:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.opportunity-title {
+    font-weight: bold;
+    color: #2d5fff;
+    font-size: 16px;
+    margin-bottom: 8px;
+    line-height: 1.3;
+}
+
+.opportunity-org {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 14px;
+    margin-bottom: 6px;
+    font-style: italic;
+}
+
+.opportunity-deadline {
+    color: #ff6b6b;
+    font-size: 13px;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.opportunity-link {
+    color: #4ecdc4;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    display: inline-block;
+    padding: 6px 12px;
+    background: rgba(78, 205, 196, 0.2);
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.opportunity-link:hover {
+    background: rgba(78, 205, 196, 0.3);
+    color: #4ecdc4;
+    text-decoration: none;
+    transform: scale(1.05);
+}
+
+/* Loading animation */
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+.loading {
+    animation: pulse 1.5s ease-in-out infinite;
+}
