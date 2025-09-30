@@ -353,10 +353,10 @@ OPPORTUNITY_SOURCES = {
         },
         {
             "name": "500 Global",
-            "base_url": "https://flagship.aplica.500.co",
-            "search_url": "https://flagship.aplica.500.co/",
+            "base_url": "https://500.co",
+            "search_url": "https://500.co/programs",
             "selectors": {
-                "container": ".program-item, .accelerator-card",
+                "container": ".program-card, .program-item, .accelerator-item",
                 "title": "h3, .program-title",
                 "organization": "500 Global",
                 "location": ".location, .region",
@@ -368,6 +368,7 @@ OPPORTUNITY_SOURCES = {
             "name": "Techstars",
             "base_url": "https://www.techstars.com",
             "search_url": "https://www.techstars.com/accelerators",
+            "js": True,
             "selectors": {
                 "container": ".accelerator-item, .program-card",
                 "title": "h3, .accelerator-title",
@@ -375,6 +376,114 @@ OPPORTUNITY_SOURCES = {
                 "location": ".location, .region",
                 "deadline": ".deadline, .application-deadline",
                 "url": "h3 a, .accelerator-title a"
+            }
+        },
+        {
+            "name": "Y Combinator",
+            "base_url": "https://www.ycombinator.com",
+            "search_url": "https://www.ycombinator.com/launch",
+            "js": True,
+            "selectors": {
+                "container": ".program, .launch-card, .yc-card",
+                "title": "h3, .title",
+                "organization": "Y Combinator",
+                "location": ".location, .region",
+                "deadline": ".deadline, .application-deadline",
+                "url": "a"
+            }
+        },
+        {
+            "name": "Plug and Play Tech Center",
+            "base_url": "https://www.plugandplaytechcenter.com",
+            "search_url": "https://www.plugandplaytechcenter.com/programs/",
+            "selectors": {
+                "container": ".program-card, .program-item",
+                "title": "h3, .program-title",
+                "organization": "Plug and Play Tech Center",
+                "location": ".location, .region",
+                "deadline": ".deadline, .application-deadline",
+                "url": "h3 a, .program-title a"
+            }
+        },
+        {
+            "name": "Alchemist Accelerator",
+            "base_url": "https://www.alchemistaccelerator.com",
+            "search_url": "https://www.alchemistaccelerator.com/apply",
+            "selectors": {
+                "container": ".program, .accelerator, .application",
+                "title": "h3, .title",
+                "organization": "Alchemist Accelerator",
+                "location": ".location, .region",
+                "deadline": ".deadline, .application-deadline",
+                "url": "a"
+            }
+        },
+        {
+            "name": "MassChallenge",
+            "base_url": "https://masschallenge.org",
+            "search_url": "https://masschallenge.org/programs",
+            "selectors": {
+                "container": ".program-card, .program-item",
+                "title": "h3, .program-title",
+                "organization": "MassChallenge",
+                "location": ".location, .region",
+                "deadline": ".deadline, .application-deadline",
+                "url": "h3 a, .program-title a"
+            }
+        },
+        {
+            "name": "Google for Startups Accelerator",
+            "base_url": "https://startup.google.com",
+            "search_url": "https://startup.google.com/programs/accelerator/",
+            "js": True,
+            "selectors": {
+                "container": ".program-card, .program-item",
+                "title": "h3, .program-title",
+                "organization": "Google for Startups",
+                "location": ".location, .region",
+                "deadline": ".deadline, .application-deadline",
+                "url": "h3 a, .program-title a"
+            }
+        },
+        {
+            "name": "Founder Institute",
+            "base_url": "https://fi.co",
+            "search_url": "https://fi.co/program",
+            "js": True,
+            "selectors": {
+                "container": ".program, .course, .card",
+                "title": "h3, .title",
+                "organization": "Founder Institute",
+                "location": ".location, .region",
+                "deadline": ".deadline, .application-deadline",
+                "url": "a"
+            }
+        },
+        {
+            "name": "Antler",
+            "base_url": "https://www.antler.co",
+            "search_url": "https://www.antler.co/locations",
+            "js": True,
+            "selectors": {
+                "container": ".program, .location-card, .card",
+                "title": "h3, .title",
+                "organization": "Antler",
+                "location": ".location, .region",
+                "deadline": ".deadline, .application-deadline",
+                "url": "a"
+            }
+        },
+        {
+            "name": "Intel Ignite",
+            "base_url": "https://intelignite.com",
+            "search_url": "https://intelignite.com/program/",
+            "selectors": {
+                "container": ".program-card, .program-item",
+                "title": "h3, .program-title",
+                "organization": "Intel Ignite",
+                "location": ".location, .region",
+                "deadline": ".deadline, .application-deadline",
+                "url": "h3 a, .program-title a"
             }
         }
     ]

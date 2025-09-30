@@ -51,7 +51,8 @@ from fastapi import Response
 # Initialize AI service (you'll need to set OPENAI_API_KEY environment variable)
 ai_service = None
 try:
-    openai_key = os.getenv("MY OPEN AI API KEY")
+    # Prefer the standard variable name; keep backward compatibility with old name if present
+    openai_key = os.getenv("OPENAI_API_KEY") or os.getenv("MY OPEN AI API KEY")
     if openai_key:
         ai_service = AIChatService(openai_key)
 except Exception as e:
@@ -91,27 +92,32 @@ def read_root():
 async def search_opportunities(
     keyword: str = Query(..., description="Search term, e.g. 'climate tech'"),
     region: str = Query(None, description="Geographic region"),
-    type: str = Query(None, description="Type: scholarship, fellowship, or accelerator"),
-    background_tasks: BackgroundTasks = None
+    type: str = Query(None, description="Type: scholarship, fellowship, or accelerator")
 ):
     """Search for opportunities with enhanced error handling"""
     try:
         logger.info(f"Searching for: {keyword}, type: {type}, region: {region}")
         
-        # Run scraping in background
-        opportunities = await asyncio.get_event_loop().run_in_executor(
-            None, scrape_opportunities, keyword, region, type
+        # Run scraping in a worker thread to avoid Twisted/asyncio conflicts
+        opportunities = await asyncio.to_thread(
+            scrape_opportunities, keyword, region, type
         )
-        
-        # Log search for analytics
-        if background_tasks:
-            background_tasks.add_task(log_search, keyword, type, region, len(opportunities))
-        
-        return opportunities
-        
     except Exception as e:
-        logger.error(f"Search error: {e}")
-        raise HTTPException(status_code=500, detail=f"Search failed: {str(e)}")
+        import traceback
+        logger.error("Search error: %s\n%s", repr(e), traceback.format_exc())
+        opportunities = []
+
+    # Curated fallback if nothing was found OR scraping failed
+    if not opportunities and (type or "").lower() in ["accelerator", "accelerators", "accel"]:
+        opportunities = [
+            Opportunity(title="Y Combinator - Startup Programs", organization="Y Combinator", type="accelerator", eligibility=None, deadline=None, url="https://www.ycombinator.com/launch"),
+            Opportunity(title="Techstars Accelerators", organization="Techstars", type="accelerator", eligibility=None, deadline=None, url="https://www.techstars.com/accelerators"),
+            Opportunity(title="500 Global Programs", organization="500 Global", type="accelerator", eligibility=None, deadline=None, url="https://500.co/programs"),
+            Opportunity(title="Plug and Play Programs", organization="Plug and Play Tech Center", type="accelerator", eligibility=None, deadline=None, url="https://www.plugandplaytechcenter.com/programs/"),
+            Opportunity(title="Antler Locations", organization="Antler", type="accelerator", eligibility=None, deadline=None, url="https://www.antler.co/locations"),
+        ]
+
+    return opportunities
 
 @app.post("/api/chat")
 async def chat_with_ai(request: dict, db: Session = Depends(get_db)):
@@ -133,10 +139,10 @@ async def chat_with_ai(request: dict, db: Session = Depends(get_db)):
         # Search for opportunities
         opportunities = []
         if search_params.get("keyword"):
-            opportunities = await asyncio.get_event_loop().run_in_executor(
-                None, scrape_opportunities, 
-                search_params["keyword"], 
-                search_params.get("region"), 
+            opportunities = await asyncio.to_thread(
+                scrape_opportunities,
+                search_params["keyword"],
+                search_params.get("region"),
                 search_params.get("type")
             )
         
@@ -149,9 +155,10 @@ async def chat_with_ai(request: dict, db: Session = Depends(get_db)):
         }
         
     except Exception as e:
-        logger.error(f"Chat error: {e}")
+        import traceback
+        logger.error("Chat error: %s\n%s", repr(e), traceback.format_exc())
         return {
-            "response": "I'm sorry, I encountered an error. Please try again.",
+            "response": "I'm sorry, I encountered an error during search. Here are some tips: try a more specific keyword or change the type (scholarship/fellowship/accelerator).",
             "opportunities": []
         }
 

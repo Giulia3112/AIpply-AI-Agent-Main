@@ -6,18 +6,50 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - DATABASE_URL=sqlite:///./aipply.db
+      - DATABASE_URL=${DATABASE_URL:-sqlite:///./aipply.db}
       - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - ENVIRONMENT=${ENVIRONMENT:-production}
+      - REDIS_URL=${REDIS_URL:-redis://redis:6379}
+      - SECRET_KEY=${SECRET_KEY:-your-secret-key-change-in-production}
+      - ALLOWED_ORIGINS=${ALLOWED_ORIGINS:-*}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
     volumes:
       - ./data:/app/data
+      - ./logs:/app/logs
     restart: unless-stopped
+    depends_on:
+      - redis
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/api/health"]
       interval: 30s
       timeout: 10s
       retries: 3
+      start_period: 40s
+    networks:
+      - aipply-network
 
-  # Optional: Add Redis for caching
+  # PostgreSQL Database (Production)
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB:-aipply}
+      - POSTGRES_USER=${POSTGRES_USER:-aipply_user}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-aipply_password}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    networks:
+      - aipply-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-aipply_user}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis for caching and sessions
   redis:
     image: redis:7-alpine
     ports:
@@ -25,6 +57,34 @@ services:
     restart: unless-stopped
     volumes:
       - redis_data:/data
+    networks:
+      - aipply-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    command: redis-server --appendonly yes
+
+  # Nginx reverse proxy (optional)
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./ssl:/etc/nginx/ssl
+    depends_on:
+      - aipply-api
+    restart: unless-stopped
+    networks:
+      - aipply-network
 
 volumes:
+  postgres_data:
   redis_data:
+
+networks:
+  aipply-network:
+    driver: bridge

@@ -72,38 +72,58 @@ async function sendMessage() {
     addMessage(text, "user");
     input.value = "";
 
-    // Mostra loading
-    const loadingId = addMessage("🤔 Searching for opportunities...", "bot");
+    // Show loading
+    const loadingId = addMessage("Please be patiante I am looking through the web ( the web is very big )", "bot");
 
     try {
-      // Chama a API local
-      const response = await fetch('/api/chat', {
-        method: 'POST',
+      // Lightweight intent extraction for better results
+      const lower = text.toLowerCase();
+      let inferredType = null;
+      if (lower.includes("accelerator")) inferredType = "accelerator";
+      else if (lower.includes("fellowship")) inferredType = "fellowship";
+      else if (lower.includes("scholarship")) inferredType = "scholarship";
+
+      // Pick a reasonable keyword (first significant word)
+      let keyword = "technology";
+      const words = text.split(/\s+/).filter(w => w.length > 3);
+      if (words.length > 0) keyword = words[0].replace(/[^a-zA-Z0-9-]/g, "");
+
+      // Build URL with inferred params
+      const url = inferredType
+        ? `/api/search?keyword=${encodeURIComponent(keyword)}&type=${encodeURIComponent(inferredType)}`
+        : `/api/search?keyword=${encodeURIComponent(keyword)}`;
+
+      // Call local API
+      const response = await fetch(url, {
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ message: text })
+        }
       });
 
       const data = await response.json();
-      
+
       // Remove loading message
       const loadingElement = document.querySelector('.message-row.bot:last-child');
       if (loadingElement) loadingElement.remove();
-      
-      // Adiciona resposta da IA
-      addMessage(data.response, "bot");
-      
-      // Adiciona oportunidades se houver
-      if (data.opportunities && data.opportunities.length > 0) {
-        data.opportunities.forEach(opp => {
-          addOpportunity(opp);
-        });
+
+      // When no results, show friendly message
+      if (!Array.isArray(data) || data.length === 0) {
+        addMessage("Sorry, I found nothing for you... :(", "bot");
+        return;
       }
+
+      // Adiciona resposta da IA
+      addMessage("Found " + data.length + " opportunities for you!", "bot");
+
+      // Adiciona oportunidades
+      data.forEach(opp => {
+        addOpportunity(opp);
+      });
       
     } catch (error) {
-      console.error("Erro ao chamar a API:", error);
-      addMessage("Oops! Algo deu errado. Tente novamente.", "bot");
+      console.error("Error calling the API:", error);
+      addMessage("Oops! Something went wrong. Please try again.", "bot");
     }
   }
 }
