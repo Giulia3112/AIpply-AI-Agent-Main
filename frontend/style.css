@@ -239,6 +239,44 @@ header {
     transform: scale(1.05);
 }
 
+.opportunity-amount {
+    color: #4ecdc4;
+    font-size: 14px;
+    margin-bottom: 6px;
+    font-weight: 600;
+}
+
+.opportunity-location {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 13px;
+    margin-bottom: 6px;
+    font-style: italic;
+}
+
+.opportunity-description {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 13px;
+    margin-bottom: 8px;
+    line-height: 1.4;
+}
+
+.opportunity-eligibility {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 12px;
+    margin-bottom: 6px;
+    font-style: italic;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+.opportunity-source {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 11px;
+    margin-bottom: 8px;
+    font-weight: 400;
+}
+
 /* Loading animation */
 @keyframes pulse {
     0% { opacity: 1; }

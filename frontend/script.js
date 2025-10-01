@@ -35,12 +35,49 @@ function addOpportunity(opportunity) {
   
   const opportunityDiv = document.createElement("div");
   opportunityDiv.className = "opportunity-card";
-  opportunityDiv.innerHTML = `
+  
+  // Build enhanced opportunity card with detailed information
+  let cardContent = `
     <div class="opportunity-title">${opportunity.title}</div>
     <div class="opportunity-org">${opportunity.organization}</div>
-    ${opportunity.deadline ? `<div class="opportunity-deadline">Deadline: ${opportunity.deadline}</div>` : ''}
-    ${opportunity.url ? `<a href="${opportunity.url}" target="_blank" class="opportunity-link">View Details</a>` : ''}
   `;
+  
+  // Add amount if available
+  if (opportunity.amount) {
+    cardContent += `<div class="opportunity-amount">💰 ${opportunity.amount}</div>`;
+  }
+  
+  // Add location if available
+  if (opportunity.location) {
+    cardContent += `<div class="opportunity-location">📍 ${opportunity.location}</div>`;
+  }
+  
+  // Add deadline if available
+  if (opportunity.deadline) {
+    cardContent += `<div class="opportunity-deadline">⏰ Deadline: ${opportunity.deadline}</div>`;
+  }
+  
+  // Add description if available
+  if (opportunity.description) {
+    cardContent += `<div class="opportunity-description">${opportunity.description.substring(0, 150)}${opportunity.description.length > 150 ? '...' : ''}</div>`;
+  }
+  
+  // Add eligibility if available
+  if (opportunity.eligibility) {
+    cardContent += `<div class="opportunity-eligibility">📋 Eligibility: ${opportunity.eligibility.substring(0, 100)}${opportunity.eligibility.length > 100 ? '...' : ''}</div>`;
+  }
+  
+  // Add source if available
+  if (opportunity.source) {
+    cardContent += `<div class="opportunity-source">🔗 Source: ${opportunity.source}</div>`;
+  }
+  
+  // Add view details link
+  if (opportunity.url) {
+    cardContent += `<a href="${opportunity.url}" target="_blank" class="opportunity-link">View Details</a>`;
+  }
+  
+  opportunityDiv.innerHTML = cardContent;
   
   const timeSpan = document.createElement("span");
   timeSpan.className = "time";
@@ -88,10 +125,10 @@ async function sendMessage() {
       const words = text.split(/\s+/).filter(w => w.length > 3);
       if (words.length > 0) keyword = words[0].replace(/[^a-zA-Z0-9-]/g, "");
 
-      // Build URL with inferred params
+      // Build URL with inferred params - use detailed search endpoint
       const url = inferredType
-        ? `/api/search?keyword=${encodeURIComponent(keyword)}&type=${encodeURIComponent(inferredType)}`
-        : `/api/search?keyword=${encodeURIComponent(keyword)}`;
+        ? `/api/search-detailed?keyword=${encodeURIComponent(keyword)}&type=${encodeURIComponent(inferredType)}`
+        : `/api/search-detailed?keyword=${encodeURIComponent(keyword)}`;
 
       // Call local API
       const response = await fetch(url, {

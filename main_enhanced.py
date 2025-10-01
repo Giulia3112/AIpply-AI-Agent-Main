@@ -17,6 +17,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), 'startup_opps_api'))
 
 from startup_opps_api.models.opportunity import Opportunity
 from startup_opps_api.services.run_scraper import scrape_opportunities
+from startup_opps_api.services.enhanced_scraper import scrape_detailed_opportunities
 from startup_opps_api.services.ai_chat import AIChatService
 from startup_opps_api.database.database import get_db, create_tables
 from startup_opps_api.database.models import Opportunity as DBOpportunity, User, ChatSession
@@ -118,6 +119,44 @@ async def search_opportunities(
         ]
 
     return opportunities
+
+@app.get("/api/search-detailed")
+async def search_detailed_opportunities(
+    keyword: str = Query("", description="Search keyword"),
+    region: str = Query("", description="Geographic region filter"),
+    type: str = Query("", description="Opportunity type (scholarship, fellowship, accelerator)")
+):
+    """Enhanced search endpoint that scrapes detailed opportunity information from database websites"""
+    try:
+        logger.info(f"Detailed search request: keyword='{keyword}', type='{type}', region='{region}'")
+        
+        # Use enhanced scraper for detailed results
+        opportunities = await asyncio.to_thread(
+            scrape_detailed_opportunities, keyword, type, region
+        )
+        
+        # Convert to Opportunity objects
+        opportunity_objects = []
+        for opp in opportunities:
+            opportunity_objects.append(Opportunity(
+                title=opp.get('title', ''),
+                organization=opp.get('organization', ''),
+                type=opp.get('type', 'opportunity'),
+                eligibility=opp.get('eligibility', ''),
+                deadline=opp.get('deadline', ''),
+                url=opp.get('url', ''),
+                amount=opp.get('amount', ''),
+                location=opp.get('location', ''),
+                description=opp.get('description', ''),
+                source=opp.get('source', '')
+            ))
+        
+        return opportunity_objects
+        
+    except Exception as e:
+        import traceback
+        logger.error("Detailed search error: %s\n%s", repr(e), traceback.format_exc())
+        return []
 
 @app.post("/api/chat")
 async def chat_with_ai(request: dict, db: Session = Depends(get_db)):
