@@ -459,9 +459,9 @@ class EnhancedOpportunityParser:
         if keyword:
             keyword_lower = keyword.lower()
             filtered = [opp for opp in filtered if 
-                       keyword_lower in opp.get('title', '').lower() or
-                       keyword_lower in opp.get('description', '').lower() or
-                       keyword_lower in opp.get('eligibility', '').lower()]
+                       keyword_lower in (opp.get('title') or '').lower() or
+                       keyword_lower in (opp.get('description') or '').lower() or
+                       keyword_lower in (opp.get('eligibility') or '').lower()]
         
         if type:
             type_lower = type.lower()
@@ -470,7 +470,7 @@ class EnhancedOpportunityParser:
         if region:
             region_lower = region.lower()
             filtered = [opp for opp in filtered if 
-                       region_lower in opp.get('location', '').lower() or
-                       region_lower in opp.get('organization', '').lower()]
+                       region_lower in (opp.get('location') or '').lower() or
+                       region_lower in (opp.get('organization') or '').lower()]
         
         return filtered

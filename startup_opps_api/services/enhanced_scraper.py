@@ -288,7 +288,7 @@ class EnhancedOpportunityScraper:
             keyword_lower = keyword.lower()
             fallback_opportunities = [opp for opp in fallback_opportunities 
                                     if keyword_lower in opp['title'].lower() or 
-                                       keyword_lower in opp['description'].lower()]
+                                       keyword_lower in (opp.get('description') or '').lower()]
         
         return fallback_opportunities
 
