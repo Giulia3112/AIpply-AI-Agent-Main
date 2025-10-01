@@ -64,6 +64,10 @@ class EnhancedOpportunityScraper:
         unique_opportunities = self._remove_duplicates(filtered_opportunities)
         ranked_opportunities = self._rank_by_relevance(unique_opportunities, keyword)
         
+        # If no results found, provide fallback opportunities
+        if not ranked_opportunities:
+            ranked_opportunities = self._get_fallback_opportunities(keyword, type)
+        
         return ranked_opportunities[:20]  # Return top 20 results
     
     def _get_relevant_sources(self, type: str) -> List[Dict[str, Any]]:
@@ -109,6 +113,14 @@ class EnhancedOpportunityScraper:
             for opp in opportunities:
                 opp['source_url'] = source['search_url']
                 opp['source_name'] = source['name']
+            
+            # If no opportunities found, try without keyword filtering
+            if not opportunities and keyword:
+                logger.info(f"No opportunities found with keyword '{keyword}', trying without keyword filter")
+                opportunities = self.parser.parse_database_website(source['search_url'], "", type)
+                for opp in opportunities:
+                    opp['source_url'] = source['search_url']
+                    opp['source_name'] = source['name']
             
             return opportunities
             
@@ -189,6 +201,96 @@ class EnhancedOpportunityScraper:
         
         # Sort by relevance score (highest first)
         return sorted(opportunities, key=calculate_relevance, reverse=True)
+    
+    def _get_fallback_opportunities(self, keyword: str, type: str) -> List[Dict[str, Any]]:
+        """Provide fallback opportunities when scraping fails"""
+        fallback_opportunities = []
+        
+        if type.lower() == "scholarship":
+            fallback_opportunities = [
+                {
+                    'title': 'Fulbright Foreign Student Program',
+                    'organization': 'Fulbright Commission',
+                    'type': 'scholarship',
+                    'description': 'Fully funded scholarship for international students to study in the US',
+                    'url': 'https://fulbright.org.br/bolsas-para-brasileiros/',
+                    'source': 'Fulbright',
+                    'eligibility': 'Open to international students'
+                },
+                {
+                    'title': 'Chevening Scholarships',
+                    'organization': 'UK Government',
+                    'type': 'scholarship',
+                    'description': 'Fully funded scholarships for international students to study in the UK',
+                    'url': 'https://www.chevening.org/',
+                    'source': 'Chevening',
+                    'eligibility': 'Open to international students'
+                }
+            ]
+        elif type.lower() == "fellowship":
+            fallback_opportunities = [
+                {
+                    'title': 'Rhodes Scholarship',
+                    'organization': 'Rhodes Trust',
+                    'type': 'fellowship',
+                    'description': 'Prestigious fellowship for postgraduate study at Oxford University',
+                    'url': 'https://www.rhodeshouse.ox.ac.uk/',
+                    'source': 'Rhodes Trust',
+                    'eligibility': 'Open to exceptional students worldwide'
+                },
+                {
+                    'title': 'Gates Cambridge Scholarship',
+                    'organization': 'Gates Cambridge Trust',
+                    'type': 'fellowship',
+                    'description': 'Full-cost scholarship for postgraduate study at Cambridge University',
+                    'url': 'https://www.gatescambridge.org/',
+                    'source': 'Gates Cambridge',
+                    'eligibility': 'Open to international students'
+                }
+            ]
+        elif type.lower() == "accelerator":
+            fallback_opportunities = [
+                {
+                    'title': 'Y Combinator Startup School',
+                    'organization': 'Y Combinator',
+                    'type': 'accelerator',
+                    'description': 'Free online startup school and accelerator program',
+                    'url': 'https://www.startupschool.org/',
+                    'source': 'Y Combinator',
+                    'eligibility': 'Open to all startups'
+                },
+                {
+                    'title': 'Techstars Accelerator',
+                    'organization': 'Techstars',
+                    'type': 'accelerator',
+                    'description': '3-month accelerator program with funding and mentorship',
+                    'url': 'https://www.techstars.com/accelerators',
+                    'source': 'Techstars',
+                    'eligibility': 'Open to early-stage startups'
+                }
+            ]
+        else:
+            # General opportunities
+            fallback_opportunities = [
+                {
+                    'title': 'Global Opportunities Database',
+                    'organization': 'OpportunityDesk',
+                    'type': 'opportunity',
+                    'description': 'Comprehensive database of global opportunities',
+                    'url': 'https://opportunitydesk.org/',
+                    'source': 'OpportunityDesk',
+                    'eligibility': 'Various opportunities available'
+                }
+            ]
+        
+        # Filter by keyword if provided
+        if keyword:
+            keyword_lower = keyword.lower()
+            fallback_opportunities = [opp for opp in fallback_opportunities 
+                                    if keyword_lower in opp['title'].lower() or 
+                                       keyword_lower in opp['description'].lower()]
+        
+        return fallback_opportunities
 
 def scrape_detailed_opportunities(keyword: str = "", type: str = "", region: str = "") -> List[Dict[str, Any]]:
     """

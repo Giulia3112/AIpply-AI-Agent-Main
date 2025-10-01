@@ -90,7 +90,7 @@ class EnhancedOpportunityParser:
                 description = desc_elem.get_text(strip=True) if desc_elem else None
                 
                 # Filter by keyword if provided
-                if keyword and keyword.lower() not in title.lower():
+                if keyword and title and keyword.lower() not in title.lower():
                     continue
                 
                 if title and url:
@@ -143,7 +143,7 @@ class EnhancedOpportunityParser:
                     url = f"https://partiuintercambio.org{url}"
                 
                 # Filter by keyword
-                if keyword and keyword.lower() not in title.lower():
+                if keyword and title and keyword.lower() not in title.lower():
                     continue
                 
                 if title and url:
@@ -195,7 +195,7 @@ class EnhancedOpportunityParser:
                     url = f"https://www.profellow.com{url}"
                 
                 # Filter by keyword
-                if keyword and keyword.lower() not in title.lower():
+                if keyword and title and keyword.lower() not in title.lower():
                     continue
                 
                 if title and url:
@@ -243,7 +243,7 @@ class EnhancedOpportunityParser:
                     url = f"https://opportunitydesk.org{url}"
                 
                 # Filter by keyword
-                if keyword and keyword.lower() not in title.lower():
+                if keyword and title and keyword.lower() not in title.lower():
                     continue
                 
                 if title and url:
@@ -294,7 +294,7 @@ class EnhancedOpportunityParser:
                     url = f"https://www.f6s.com{url}"
                 
                 # Filter by keyword
-                if keyword and keyword.lower() not in title.lower():
+                if keyword and title and keyword.lower() not in title.lower():
                     continue
                 
                 if title and url:
@@ -346,7 +346,7 @@ class EnhancedOpportunityParser:
                     url = f"https://www.idealist.org{url}"
                 
                 # Filter by keyword
-                if keyword and keyword.lower() not in title.lower():
+                if keyword and title and keyword.lower() not in title.lower():
                     continue
                 
                 if title and url:
