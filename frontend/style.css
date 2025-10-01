@@ -6,6 +6,7 @@ body {
     background-position: center;
     background-repeat: no-repeat;
     background-attachment: fixed;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
 }
 
 
@@ -88,25 +89,27 @@ header {
 
 .chat-wrapper {
     display: flex;
-    align-items: flex-start;
-    margin-left: 20px;
-    gap: 10px;
+    flex-direction: column;
+    padding: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+    height: calc(100vh - 200px);
+    overflow-y: auto;
+    gap: 15px;
 }
 
 #chat-container {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    padding: 15px;
-    border-radius: 10px;
-    color: white;
-    max-width: 100%;
+    gap: 15px;
+    width: 100%;
 }
 
 .message-row {
     display: flex;
     flex-direction: column;
-    max-width: 50%;
+    max-width: 70%;
+    margin-bottom: 10px;
 }
 
 .message-row-user {
@@ -120,34 +123,38 @@ header {
 }
 
 .chat-message {
-    background: rgba(255, 255, 255, 0.1);
-    padding: 10px 14px;
-    border-radius: 10px;
+    padding: 12px 16px;
+    border-radius: 18px;
     color: white;
     word-wrap: break-word;
+    font-size: 14px;
+    line-height: 1.4;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Mensagem do usuário (direita) */
+/* User message (right side) */
 .message-row-user .chat-message {
-  background: #2d5fff;   /* cor de fundo diferente */
-  align-self: flex-end;  /* joga pro lado direito */
-  border-bottom-right-radius: 0; /* detalhe no canto */
-  max-width: 50%;
+  background: #2d5fff;
+  border-bottom-right-radius: 4px;
+  margin-left: auto;
+  max-width: 100%;
   word-break: break-word;
   overflow-wrap: break-word;
   white-space: normal;
 }
 
-/* Mensagem do bot (esquerda) */
+/* Bot message (left side) */
 .message-row-bot .chat-message {
-  background: rgba(255, 255, 255, 0.1);
-  align-self: flex-start; /* lado esquerdo */
-  border-bottom-left-radius: 0;
-  max-width: 70%;
+  background: rgba(255, 255, 255, 0.15);
+  border-bottom-left-radius: 4px;
+  margin-right: auto;
+  max-width: 100%;
   word-wrap: break-word;
   overflow-wrap: break-word;
   white-space: normal;
   text-align: left;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 /*
@@ -159,9 +166,10 @@ header {
 */
 
 .time {
-    color: gray;
+    color: rgba(255, 255, 255, 0.6);
     margin-top: 4px;
-    font-size: 12px;
+    font-size: 11px;
+    font-weight: 400;
 }
 
 .chat-section {
